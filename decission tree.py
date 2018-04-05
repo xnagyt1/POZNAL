@@ -101,41 +101,10 @@ sc_X = StandardScaler()
 X_train = sc_X.fit_transform(X_train)
 X_test =sc_X.transform(X_test)
 
-# Importing Keras libraries and packages
-import keras
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
-from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import GridSearchCV
-from keras.callbacks import EarlyStopping
-
-def build_classifier(units,optimizer,dropout):
-    classifier = Sequential()
-    classifier.add(Dense(units = units,kernel_initializer='uniform',activation='relu',input_dim = 33))
-    classifier.add(Dropout(rate = dropout))
-    classifier.add(Dense(units = units,kernel_initializer='uniform',activation='relu'))
-    classifier.add(Dropout(rate = dropout))
-    classifier.add(Dense(units = 5,kernel_initializer='uniform',activation='softmax'))
-    classifier.compile(optimizer=optimizer,loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    return classifier
-classifier = KerasClassifier(build_fn = build_classifier)
-parameters = {'batch_size' : [25,32], 'epochs' : [500], 'units': [50,100,150,200], 'optimizer' : ['rmsprop','adam'],'dropout':[0.5],'callbacks':[[EarlyStopping(monitor='acc', patience=5)]]}
-grid_search = GridSearchCV(estimator = classifier, param_grid = parameters, scoring = 'accuracy', cv = 10)
-grid_search = grid_search.fit(X_train,Y_train)
-best_parameters = grid_search.best_params_
-best_accuracy = grid_search.best_score_
-
-
-classifier = build_classifier(100,'adam',0.5)
-# Fitting the ANN to the Training set
-classifier.fit(X_train,Y_train,batch_size = 32, epochs = 500,callbacks=[EarlyStopping(monitor='acc', patience=10)])
-
-
-# Predicting the Test set results
-Y_pred = classifier.predict_classes(X_test)
-#Y_pred = (Y_pred>0.5)
-
+#BUild Classifier
+from sklearn.tree import DecisionTreeClassifier
+classifier = DecisionTreeClassifier(max_depth = 10).fit(X_train, Y_train)
+Y_pred = classifier.predict(X_test)
 # Making the Confucion Matrix
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(Y_test,Y_pred)
