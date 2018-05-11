@@ -111,7 +111,7 @@ cm = confusion_matrix(Y_test,Y_pred)
 
 # Makeing classification report
 from sklearn.metrics import classification_report
-target_names = ['AD', 'EMCI', 'LMCI','AD','SNC']
+target_names = ['AD', 'EMCI', 'LMCI','AD']
 cr = classification_report(Y_test, Y_pred, target_names=target_names)
 
 # Counting BMI, accuracy
